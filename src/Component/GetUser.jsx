@@ -21,7 +21,7 @@ class getUser extends Component{
             this.setState({ user: result.data });    
             // set value into local storage so that use again in edit user
             localStorage.setItem('AllUser', JSON.stringify(this.state.user));
-            console.log(result);  
+            console.log("result ", result);  
         }).catch(error => {
             console.log(error);
             this.setState({err: 'Error reterving data :: ' + error})
@@ -60,6 +60,7 @@ class getUser extends Component{
                                     <th scope="col">Name</th>
                                     <th scope="col">Department</th>
                                     <th scope="col">Email</th>
+                                    <th scope="col">Password</th>
                                     <th scope="col">Designation</th>   
                                     <th scope="col">Button</th>                         
                                 </tr>
@@ -73,6 +74,7 @@ class getUser extends Component{
                                             <th scope="row">{data.name}</th>
                                             <td>{data.dept}</td>
                                             <td>{data.email}</td>
+                                            <td>{data.password}</td>
                                             <td>{data.designation}</td>
                                             <td>
                                                 <button className="btn btn-primary  mr-1" onClick={() => this.editUserHandler(data._id)}>Edit</button>
