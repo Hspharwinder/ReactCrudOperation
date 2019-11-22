@@ -54,12 +54,9 @@ class AddUser extends Component{
         //  creating dynamic object for validation
         let valid = this.validate;
         let v_id = "v_" + id;
-        let d_key = "touched12";
-        let d_value = true;
-        valid[v_id] = { [d_key] : d_value }; // insert new key and value into dynamic object 
+        valid[v_id] = { touched : true}; // insert new key and value into dynamic object 
         // valid[v_id].touched = true;   // also set value like this
-        console.log(valid);
-        debugger;
+
         switch(true){
             case id === 'email' || type === "email": {
                 valid[v_id] = { v_msg: validateEmail(value) }
@@ -101,6 +98,7 @@ class AddUser extends Component{
             <div className="container mt-5 border">                
                 <h1><u>Add User Page</u></h1>
                 <h3><Link to="/getUser">Go to home</Link></h3>
+
                 <form onSubmit={this.submitHandler}>
                     <table className="table">
                         <thead className="thead-dark">
