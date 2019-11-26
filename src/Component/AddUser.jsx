@@ -49,12 +49,10 @@ class AddUser extends Component{
 
     onDropdownSelected = (e) => {
         const checked = e.target.value; 
-        
         const eventValues = this.setEventValues(e);    
-        console.log("checked val  ", {...eventValues});
         if(eventValues.index !== 0)
             this.state.dept = checked;  
-        // this.setState(prevState => ({ ...prevState, dept: "checked" }), ()=>{
+        // this.setState({ dept: "checked" }, ()=>{
             console.log("checked ========  ", this.state);
         // });
         
@@ -104,13 +102,13 @@ class AddUser extends Component{
     submitHandler = e=> {
         e.preventDefault(); // prevent to page refresh otherwise it reset empty state values    
             
-        // ApiService.AddUser(this.state).then(msg => {
-        //     console.log("Response : ", msg.data.res);
-        //     this.props.history.push('/getUser');
+        ApiService.AddUser(this.state).then(msg => {
+            console.log("Response : ", msg.data.res);
+            this.props.history.push('/getUser');
 
-        // }).catch(err=>{
-        //     console.log("err ", err)
-        // })
+        }).catch(err=>{
+            console.log("err ", err)
+        })
     }
     
     getName = (value, id) => {
