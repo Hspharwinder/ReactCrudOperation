@@ -2,7 +2,7 @@
 # ReactCrudOperation
 validations 
 
-checkbox
-dropdown
-simple text
+1. checkbox<br>
+2. dropdown<br>
+3. simple text<br>
 
