@@ -16,3 +16,18 @@ export const validateText = (values) => {
     return errors;
 };
 
+export const validateCheckBoxList = (arr) =>{
+    let valid = false;
+    let errors = '';
+    // set valid true if any checkbox checked
+    arr.map((key) => {
+        if (key.checked)
+            valid = true;
+    });
+    // if valid is false, it mean no checkbox selected so return validation error
+    if(!valid)
+        errors = 'required';
+    
+    return errors;
+
+}
