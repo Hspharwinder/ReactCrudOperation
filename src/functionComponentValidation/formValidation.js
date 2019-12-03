@@ -20,7 +20,7 @@ export const validateCheckBoxList = (arr) =>{
     let valid = false;
     let errors = '';
     // set valid true if any checkbox checked
-    arr.map((key) => {
+    arr.forEach((key) => {
         if (key.checked)
             valid = true;
     });

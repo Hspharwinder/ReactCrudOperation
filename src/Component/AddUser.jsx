@@ -5,21 +5,15 @@ import { validateEmail, validateText, validateCheckBoxList} from '../functionCom
 
 class AddUser extends Component{
     constructor(props){
-        super(props)
+        super(props)     
         this.state = {
             name:'',
             dept:'',
             email:'',
             designation:[],
-            password:''        
+            password:'',
         }
-        this.deptList = [
-            { depId: '1', deptName: 'MEAN' },
-            { depId: '2', deptName: 'MERN' },
-            { depId: '3', deptName: 'MEVN' },
-            { depId: '4', deptName: 'DOT NET' },
-            { depId: '5', deptName: 'PHP' },
-        ]
+        this.bindDeptList();
         this.designationList = [
             { Id: '1', Name: 'DR' },
             { Id: '2', Name: 'Manager' },
@@ -30,10 +24,21 @@ class AddUser extends Component{
         this.isSubmitValid = false;
         this.selectedItem = [];
         this.checkBoxSelected = [];
-        this.validate = {  }
-
+        this.validate = {  };
+        this.dropDownSelectedValue = ''
     }   
-    changeHandler = (e) =>{
+
+    bindDeptList(){
+        this.deptList = [
+            { depId: '1', deptName: 'MEAN' },
+            { depId: '2', deptName: 'MERN' },
+            { depId: '3', deptName: 'MEVN' },
+            { depId: '4', deptName: 'DOT NET' },
+            { depId: '5', deptName: 'PHP' },
+        ]
+    }
+    
+    changeHandler = (e) =>{        
         const eventValues = this.setEventValues(e);       
         this.Validation(eventValues);   
     } 
@@ -47,25 +52,33 @@ class AddUser extends Component{
         }
     }
 
-    onDropdownSelected = (e) => {
-        const checked = e.target.value; 
-        const eventValues = this.setEventValues(e);    
-        if(eventValues.index !== 0)
-            this.state.dept = checked;  
-        // this.setState({ dept: "checked" }, ()=>{
-            console.log("checked ========  ", this.state);
-        // });
-        
-        // check validation
-        this.Validation(eventValues);
-        
-        let arr = this.deptList;
-        //here you will see the current selected value of the select input
-        arr = arr.map((key) => {
-            key.checked = key.deptName === checked ? true : false;
-            return key;
-        })
-        this.selectedItem = arr;
+    // dropdown(department) change 
+    change(e){
+        const checked = e.target.value;
+        const eventValues = this.setEventValues(e);
+        if (eventValues.index !== 0) {
+            // this.setState({ value: event.target.value });
+            // setstate not asynchronous therefore use like this 
+            this.setState({ dept: checked }, function () {
+                console.log("worked ", this.state.dept);
+                this.dropDownSelectedValue = checked;
+                // check validation
+                this.Validation(eventValues);
+
+                let arr = this.deptList;
+                //here you will see the current selected value of the select input
+                arr = arr.map((key) => {
+                    key.checked = key.deptName === checked ? true : false;
+                    return key;
+                })
+                this.selectedItem = arr;
+            });
+        }
+        else{
+            // check validation
+            // this.setState({ dept: '' });
+            this.Validation(eventValues);            
+        }           
     }
 
     onCheckBoxSelected = e => {
@@ -117,18 +130,18 @@ class AddUser extends Component{
         console.log("Child to parent state :: ", this.state.name);
     }
 
-    Validation = (e) => {        
+    Validation = (e) => {  
         const id = e.id;
         const value = e.value;
         const type = e.type;
         const index = e.index;
+        console.log("e = ", e);
         this.setState({ [id]: value });
         //  creating dynamic object for validation
         let valid = this.validate;
         let v_id = "v_" + id;
         valid[v_id] = { touched : true}; // insert new key and value into dynamic object 
         // valid[v_id].touched = true;   // also set value like this
-
         switch(true){
             case id === 'email' || type === "email": {
                 valid[v_id] = { v_msg: validateEmail(value) }
@@ -152,10 +165,10 @@ class AddUser extends Component{
                 valid[v_id].v_msg = validateText(value);
                 break;
             }
-            case id === "dept": {
+            case index === 0: {
                 valid[v_id].v_msg = index === 0 ? 'required' : '';
-                this.setState({dept:''})
-                break;
+                this.setState({dept:''});  // issue not setting value of dept 
+                break;    
             }
             case id === "designation" || type === 'checkbox': {
                 valid[v_id].v_msg = validateCheckBoxList(this.checkBoxSelected);
@@ -170,17 +183,17 @@ class AddUser extends Component{
                 break;
             }            
         }    
-        
         this.isSubmitValid = this.submitValidation();
+        console.log("IsSubmit ", this.isSubmitValid);
     }  
 
     submitValidation(){
         let isValid = true;
         console.log("this.state ", this.state);
-        Object.values(this.state).map((value)=> {
+        Object.values(this.state).forEach((value)=> {
             console.log("submit button ", value);
             if(!value)
-                isValid = false;
+                isValid = false; console.log("IsValid ", isValid);
        });
         if ('required' === validateCheckBoxList(this.checkBoxSelected))
             isValid = false;
@@ -189,7 +202,7 @@ class AddUser extends Component{
     }
 
     render(){
-        const { name, dept, email, password, designation } = this.state;  
+        const { name, email, password } = this.state;  
         const { v_name, v_dept, v_email, v_password, v_designation } = this.validate;
         return (
             <div className="container mt-5 border">                
@@ -216,9 +229,7 @@ class AddUser extends Component{
                                     {(v_name && v_name.touched && v_name.v_msg) ? (<p className="text-danger">{v_name.v_msg}</p>) : ''}                         
                                 </th>
                                 <td>
-                                    <select name="dept" className="form-control" 
-                                        onChange={this.onDropdownSelected}  id="dept" 
-                                    >
+                                    <select id="dept" className="form-control"  name="dept" onChange={this.change.bind(this)} >
                                         <option value="select">select</option>
                                         {this.deptList.map((e, key) => {
                                             return <option key={key} value={e.Name}>{e.deptName}</option>;
@@ -232,7 +243,7 @@ class AddUser extends Component{
                                 </td>
                                 <td>
                                     <input type="text" className="form-control" value={email} 
-                                    onChange={this.changeHandler} id="email" 
+                                        onChange={this.changeHandler} id="email" 
                                         onBlur={this.onBlur}
                                     />
                                     {v_email ? (<p className="text-danger">{v_email.v_msg}</p>):''}      
@@ -270,7 +281,7 @@ class AddUser extends Component{
                         </tbody>
                     </table>   
                     <button type="submit" disabled={!this.isSubmitValid} className="btn btn-primary float-right mb-5">Submit</button>
-                </form>                                                
+                </form>                                           
             </div>
         )
     }
