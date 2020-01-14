@@ -1,0 +1,17 @@
+.login{
+   max-width: 500px;
+    margin: auto;
+    background-color: #fff;
+    padding: 10px 20px;
+    position: relative;
+    z-index: 999;
+    margin-top: 10%;    
+}
+.bglogin{
+    background-color: rgba(0, 0, 0, 0.32);
+    position: fixed;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;   
+}

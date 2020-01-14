@@ -9,9 +9,11 @@ class editUser extends Component {
         super(props)
         this.state = {
             user:[{
+                id:'',
                 name: '',
                 dept: '',
                 email: '',
+                password:'',
                 designation: ''
             }]       
         }
@@ -32,25 +34,32 @@ class editUser extends Component {
         this.setState(arr)
     }
 
-    getUser = () => {        
+    getUser = () => {    
         const id = this.props.match.params.id;
         let locValue = JSON.parse(localStorage.getItem('AllUser'));   
         locValue = locValue.filter(x => x._id === id);
         this.setState({ user: locValue });
+        console.log("this.setState  ", this.setState.user );
     } 
 
     submitHandler = e => {
         e.preventDefault(); // prevent to page refresh otherwise it reset empty state values
+        // add id, api not accept _id
+        let arr = {...this.state.user};
+        arr[0]['id']=this.state.user[0]._id;
+        this.setState({ user: arr});
+
         ApiService.EditUser(this.state.user[0]).then(msg => {
             console.log("Response : ", msg.data.res);
             this.props.history.push('/getUser');
         }).catch(err => {
+            alert(err)
             console.log("err ", err)
         })
     }
 
     render() {
-        const { name, dept, email, designation } = this.state.user[0];
+        const { name, dept, email, password, designation } = this.state.user[0];
         return (
             <div className="container mt-5 border">
                 <h1><u>Edit User Page</u></h1>
@@ -62,6 +71,7 @@ class editUser extends Component {
                                 <th scope="col">Name</th>
                                 <th scope="col">Department</th>
                                 <th scope="col">Email</th>
+                                <th scope="col">Password</th>
                                 <th scope="col">Designation</th>
                             </tr>
                         </thead>
@@ -70,6 +80,7 @@ class editUser extends Component {
                                 <th scope="row"><input type="text" className="form-control" value={name} onChange={this.changeHandler} id="name" /></th>
                                 <td><input type="text" className="form-control" value={dept} onChange={this.changeHandler} id="dept" /></td>
                                 <td><input type="text" className="form-control" value={email} onChange={this.changeHandler} id="email" /></td>
+                                <td><input type="text" className="form-control" value={password} onChange={this.changeHandler} id="password" /></td>
                                 <td><input type="text" className="form-control" value={designation} onChange={this.changeHandler} id="designation" /></td>
                             </tr>
                         </tbody>
